@@ -3,7 +3,7 @@ import numpy as np
 
 
 def make_coordinates(image, line_parameters):
-    """Converts slope intercept to standart form"""
+    """Converts slope intercept to standard form"""
     slope, intercept = line_parameters
     y1 = image.shape[0]
     y2 = int(y1*(3/5))
@@ -35,7 +35,7 @@ def average_slope_intercept(image, lines):
 
 
 def canny(image):
-    """Grayscale conversion, smoothening, outlines a gradient"""
+    """Grayscale conversion, smoothing, outlines a gradient"""
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     canny = cv2.Canny(blur, 50, 150)
@@ -67,7 +67,7 @@ print("Hello, Antoshka!")
 
 
 cap = cv2.VideoCapture("test2.mp4")
-while(cap.isOpened()):
+while cap.isOpened():
     _, frame = cap.read()
     if frame is not None:
         canny_image = canny(frame)
