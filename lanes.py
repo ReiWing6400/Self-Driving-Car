@@ -32,11 +32,6 @@ def average_slope_intercept(image, lines):
         right_line = make_coordinates(image, right_fit_average)
         averaged_lines = [left_line, right_line]
         return averaged_lines
-    # left_fit_average = np.average(left_fit, axis=0)
-    # right_fit_average = np.average(right_fit, axis=0)
-    # left_line = make_coordinates(image, left_fit_average)
-    # right_line = make_coordinates(image, right_fit_average)
-    # return np.array([left_line, right_line])
 
 
 def canny(image):
@@ -68,33 +63,24 @@ def region_of_interest(image):
     return masked_image
 
 
-# image = cv2.imread('test_image.jpg')
-# lane_image = np.copy(image)
-# canny_image = canny(lane_image)
-# cropped_image = region_of_interest(canny_image)
-# lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]),
-#                         minLineLength=40, maxLineGap=5)
-# average_lines = average_slope_intercept(lane_image, lines)
-# line_image = display_lines(image, average_lines)
-# combo_image = cv2.addWeighted(lane_image, 0.8, line_image, 1, 0)
-# cv2.imshow("result", combo_image)
-# cv2.waitKey(5000)
-
 print("Hello, Antoshka!")
 
 
 cap = cv2.VideoCapture("test2.mp4")
 while(cap.isOpened()):
     _, frame = cap.read()
-    canny_image = canny(frame)
-    cropped_image = region_of_interest(canny_image)
-    lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]),
-                            minLineLength=40, maxLineGap=5)
-    average_lines = average_slope_intercept(frame, lines)
-    line_image = display_lines(frame, average_lines)
-    combo_image = cv2.addWeighted(frame, 0.8, line_image, 1, 0)
-    cv2.imshow("result", combo_image)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if frame is not None:
+        canny_image = canny(frame)
+        cropped_image = region_of_interest(canny_image)
+        lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]),
+                                minLineLength=40, maxLineGap=5)
+        average_lines = average_slope_intercept(frame, lines)
+        line_image = display_lines(frame, average_lines)
+        combo_image = cv2.addWeighted(frame, 0.8, line_image, 1, 0)
+        cv2.imshow("result", combo_image)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    else:
         break
 cap.release()
 cv2.destroyAllWindows()
