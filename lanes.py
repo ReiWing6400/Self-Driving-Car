@@ -12,11 +12,11 @@ def make_coordinates(image, line_parameters):
     return np.array([x1, y1, x2, y2])
 
 
-def average_slope_intercept(image, lines):
+def average_slope_intercept(image, line_array):
     """Linear smoother for given values"""
     left_fit = []
     right_fit = []
-    for line in lines:
+    for line in line_array:
         x1, y1, x2, y2 = line.reshape(4)
         parameters = np.polyfit((x1, x2), (y1, y2), 1)
         slope = parameters[0]
@@ -36,17 +36,17 @@ def average_slope_intercept(image, lines):
 
 def canny(image):
     """Grayscale conversion, smoothing, outlines a gradient"""
-    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    canny = cv2.Canny(blur, 50, 150)
-    return canny
+    gray_conversion = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    blur_conversion = cv2.GaussianBlur(gray_conversion, (5, 5), 0)
+    canny_conversion = cv2.Canny(blur_conversion, 50, 150)
+    return canny_conversion
 
 
-def display_lines(image, lines):
+def display_lines(image, lines_coordinate):
     """Masks an image with the given lines"""
     line_image = np.zeros_like(image)
-    if lines is not None:
-        for x1, y1, x2, y2 in lines:
+    if lines_coordinate is not None:
+        for x1, y1, x2, y2 in lines_coordinate:
             cv2.line(line_image, (x1, y1), (x2, y2), (150, 150, 0), 10)
     return line_image
 
@@ -75,8 +75,8 @@ while cap.isOpened():
         lines = cv2.HoughLinesP(cropped_image, 2, np.pi/180, 100, np.array([]),
                                 minLineLength=40, maxLineGap=5)
         average_lines = average_slope_intercept(frame, lines)
-        line_image = display_lines(frame, average_lines)
-        combo_image = cv2.addWeighted(frame, 0.8, line_image, 1, 0)
+        lane_line_image = display_lines(frame, average_lines)
+        combo_image = cv2.addWeighted(frame, 0.8, lane_line_image, 1, 0)
         cv2.imshow("result", combo_image)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
